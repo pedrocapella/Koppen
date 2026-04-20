@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Classificação Climática de Köppen-Geiger</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: #f4f6f8;
+    color: #1a2332;
+    line-height: 1.5;
+    padding: 12px;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  header { text-align: center; margin-bottom: 16px; }
+  header h1 { font-size: 1.2rem; color: #1a3a5c; margin-bottom: 4px; line-height: 1.3; }
+  header p { font-size: 0.8rem; color: #5a6778; }
+  .map-wrapper {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom: 16px;
+    border: 1px solid #e1e6ed;
+  }
+  .map-wrapper img { width: 100%; height: auto; display: block; cursor: zoom-in; }
+  .map-caption {
+    padding: 8px 12px;
+    font-size: 0.72rem;
+    color: #6b7788;
+    background: #fafbfc;
+    border-top: 1px solid #e1e6ed;
+    text-align: center;
+  }
+  .map-caption a { color: #2563a8; text-decoration: none; }
+  .nav-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .nav-btn {
+    background: #fff;
+    border: 2px solid #c9d3e0;
+    border-radius: 10px;
+    padding: 14px 6px;
+    text-align: center;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.82rem;
+    color: #1a3a5c;
+    transition: all 0.15s;
+    line-height: 1.25;
+    font-family: inherit;
+  }
+  .nav-btn:active { background: #eaf2fb; }
+  .nav-btn.active { background: #1a3a5c; color: #fff; border-color: #1a3a5c; }
+  .nav-btn .big { display: block; font-size: 1rem; margin-bottom: 2px; font-weight: 700; }
+  .content-box {
+    background: #fff;
+    border-radius: 10px;
+    padding: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    border: 1px solid #e1e6ed;
+    min-height: 200px;
+  }
+  .content-box h2 { font-size: 1.05rem; color: #1a3a5c; margin-bottom: 4px; }
+  .content-box .subtitle {
+    font-size: 0.82rem;
+    color: #6b7788;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eaeef3;
+  }
+  .letter-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    margin-bottom: 10px;
+    background: #fafbfc;
+    border-radius: 8px;
+    border-left: 4px solid #2563a8;
+  }
+  .letter-badge {
+    flex-shrink: 0;
+    width: 38px;
+    height: 38px;
+    background: #1a3a5c;
+    color: #fff;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    font-family: Georgia, serif;
+  }
+  .letter-info { flex: 1; min-width: 0; }
+  .letter-name { font-weight: 600; color: #1a2332; font-size: 0.95rem; margin-bottom: 3px; }
+  .letter-desc { font-size: 0.85rem; color: #4a5566; }
+  .group-header {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #6b7788;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin: 16px 0 8px 0;
+    padding-left: 4px;
+  }
+  .group-header:first-child { margin-top: 0; }
+  .g-A { border-left-color: #0a7d2e; } .g-A .letter-badge { background: #0a7d2e; }
+  .g-B { border-left-color: #c77b1f; } .g-B .letter-badge { background: #c77b1f; }
+  .g-C { border-left-color: #2f8f3f; } .g-C .letter-badge { background: #2f8f3f; }
+  .g-D { border-left-color: #5a6cc4; } .g-D .letter-badge { background: #5a6cc4; }
+  .g-E { border-left-color: #6b7788; } .g-E .letter-badge { background: #6b7788; }
+  footer { text-align: center; font-size: 0.72rem; color: #8a96a5; margin-top: 20px; padding: 10px; }
+  @media (min-width: 600px) {
+    body { padding: 20px; }
+    header h1 { font-size: 1.5rem; }
+    .nav-btn { font-size: 0.9rem; padding: 16px 8px; }
+    .content-box { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Classificação Climática de Köppen-Geiger</h1>
+  <p>Referência interativa · FLUP — 1º ano Geografia</p>
+</header>
+
+<div class="map-wrapper">
+  <a href="mapa.png" target="_blank" rel="noopener">
+    <img src="mapa.png"
+         alt="Mapa mundial da classificação climática de Köppen-Geiger (1980–2016)"
+         loading="eager">
+  </a>
+  <div class="map-caption">
+    Mapa Köppen-Geiger (1980–2016) · fonte: <a href="https://pt.wikipedia.org/wiki/Classifica%C3%A7%C3%A3o_clim%C3%A1tica_de_K%C3%B6ppen-Geiger" target="_blank" rel="noopener">Wikipédia</a> · toca para ampliar
+  </div>
+</div>
+
+<nav class="nav-buttons">
+  <button class="nav-btn active" data-tab="l1"><span class="big">1ª Letra</span>Grupo climático</button>
+  <button class="nav-btn" data-tab="l2"><span class="big">2ª Letra</span>Precipitação</button>
+  <button class="nav-btn" data-tab="l3"><span class="big">3ª Letra</span>Temperatura</button>
+</nav>
+
+<div class="content-box" id="content"></div>
+
+<footer>
+  Material de apoio · baseado em Peel, Finlayson &amp; McMahon (2007)
+</footer>
+
+<script>
+const CONTENT = {
+  l1: {
+    title: "1ª Letra — Grupo climático principal",
+    subtitle: "Define o grande grupo a partir da temperatura média e/ou do regime de aridez.",
+    html: `
+      <div class="letter-item g-A">
+        <div class="letter-badge">A</div>
+        <div class="letter-info">
+          <div class="letter-name">Tropical</div>
+          <div class="letter-desc">Temperatura média do mês mais frio ≥ 18 °C. Sem Inverno térmico.</div>
+        </div>
+      </div>
+      <div class="letter-item g-B">
+        <div class="letter-badge">B</div>
+        <div class="letter-info">
+          <div class="letter-name">Seco (árido / semiárido)</div>
+          <div class="letter-desc">A evapotranspiração potencial excede a precipitação anual. Critério de aridez, não de temperatura.</div>
+        </div>
+      </div>
+      <div class="letter-item g-C">
+        <div class="letter-badge">C</div>
+        <div class="letter-info">
+          <div class="letter-name">Temperado (mesotérmico)</div>
+          <div class="letter-desc">Mês mais frio entre −3 °C e +18 °C; pelo menos um mês com média ≥ 10 °C.</div>
+        </div>
+      </div>
+      <div class="letter-item g-D">
+        <div class="letter-badge">D</div>
+        <div class="letter-info">
+          <div class="letter-name">Continental (microtérmico)</div>
+          <div class="letter-desc">Mês mais frio &lt; −3 °C; pelo menos um mês com média ≥ 10 °C. Invernos rigorosos.</div>
+        </div>
+      </div>
+      <div class="letter-item g-E">
+        <div class="letter-badge">E</div>
+        <div class="letter-info">
+          <div class="letter-name">Polar</div>
+          <div class="letter-desc">Temperatura média do mês mais quente &lt; 10 °C. Sem Verão térmico.</div>
+        </div>
+      </div>
+    `
+  },
+  l2: {
+    title: "2ª Letra — Regime de precipitação (ou aridez)",
+    subtitle: "As opções dependem do grupo escolhido na 1ª letra.",
+    html: `
+      <div class="group-header">Se a 1ª letra for A (Tropical)</div>
+      <div class="letter-item g-A">
+        <div class="letter-badge">f</div>
+        <div class="letter-info">
+          <div class="letter-name">Sem estação seca</div>
+          <div class="letter-desc">Precipitação abundante em todos os meses (≥ 60 mm/mês).</div>
+        </div>
+      </div>
+      <div class="letter-item g-A">
+        <div class="letter-badge">m</div>
+        <div class="letter-info">
+          <div class="letter-name">Monção</div>
+          <div class="letter-desc">Breve estação seca, compensada por precipitação anual muito elevada.</div>
+        </div>
+      </div>
+      <div class="letter-item g-A">
+        <div class="letter-badge">w</div>
+        <div class="letter-info">
+          <div class="letter-name">Estação seca no Inverno</div>
+          <div class="letter-desc">Verão chuvoso; Inverno seco.</div>
+        </div>
+      </div>
+
+      <div class="group-header">Se a 1ª letra for B (Seco)</div>
+      <div class="letter-item g-B">
+        <div class="letter-badge">W</div>
+        <div class="letter-info">
+          <div class="letter-name">Desértico (árido)</div>
+          <div class="letter-desc">Precipitação anual muito inferior ao limiar de aridez.</div>
+        </div>
+      </div>
+      <div class="letter-item g-B">
+        <div class="letter-badge">S</div>
+        <div class="letter-info">
+          <div class="letter-name">Estepe (semiárido)</div>
+          <div class="letter-desc">Precipitação anual entre metade do limiar e o limiar total de aridez.</div>
+        </div>
+      </div>
+
+      <div class="group-header">Se a 1ª letra for C ou D (Temperado / Continental)</div>
+      <div class="letter-item g-C">
+        <div class="letter-badge">f</div>
+        <div class="letter-info">
+          <div class="letter-name">Sem estação seca</div>
+          <div class="letter-desc">Precipitação distribuída ao longo do ano.</div>
+        </div>
+      </div>
+      <div class="letter-item g-C">
+        <div class="letter-badge">s</div>
+        <div class="letter-info">
+          <div class="letter-name">Verão seco</div>
+          <div class="letter-desc">Mês mais seco no Verão com precipitação muito baixa (regime mediterrânico).</div>
+        </div>
+      </div>
+      <div class="letter-item g-C">
+        <div class="letter-badge">w</div>
+        <div class="letter-info">
+          <div class="letter-name">Inverno seco</div>
+          <div class="letter-desc">Precipitação concentrada no Verão; Inverno seco.</div>
+        </div>
+      </div>
+
+      <div class="group-header">Se a 1ª letra for E (Polar)</div>
+      <div class="letter-item g-E">
+        <div class="letter-badge">T</div>
+        <div class="letter-info">
+          <div class="letter-name">Tundra</div>
+          <div class="letter-desc">Mês mais quente entre 0 °C e 10 °C.</div>
+        </div>
+      </div>
+      <div class="letter-item g-E">
+        <div class="letter-badge">F</div>
+        <div class="letter-info">
+          <div class="letter-name">Gelo permanente</div>
+          <div class="letter-desc">Todos os meses com média &lt; 0 °C.</div>
+        </div>
+      </div>
+    `
+  },
+  l3: {
+    title: "3ª Letra — Subdivisão térmica",
+    subtitle: "Apenas alguns grupos têm 3ª letra. Para A e E, a sigla tem apenas 2 letras.",
+    html: `
+      <div class="group-header">Se a 1ª letra for B (Seco)</div>
+      <div class="letter-item g-B">
+        <div class="letter-badge">h</div>
+        <div class="letter-info">
+          <div class="letter-name">Quente</div>
+          <div class="letter-desc">Temperatura média anual ≥ 18 °C.</div>
+        </div>
+      </div>
+      <div class="letter-item g-B">
+        <div class="letter-badge">k</div>
+        <div class="letter-info">
+          <div class="letter-name">Frio</div>
+          <div class="letter-desc">Temperatura média anual &lt; 18 °C.</div>
+        </div>
+      </div>
+
+      <div class="group-header">Se a 1ª letra for C ou D</div>
+      <div class="letter-item g-C">
+        <div class="letter-badge">a</div>
+        <div class="letter-info">
+          <div class="letter-name">Verão quente</div>
+          <div class="letter-desc">Mês mais quente ≥ 22 °C.</div>
+        </div>
+      </div>
+      <div class="letter-item g-C">
+        <div class="letter-badge">b</div>
+        <div class="letter-info">
+          <div class="letter-name">Verão ameno</div>
+          <div class="letter-desc">Mês mais quente &lt; 22 °C; pelo menos 4 meses com média ≥ 10 °C.</div>
+        </div>
+      </div>
+      <div class="letter-item g-C">
+        <div class="letter-badge">c</div>
+        <div class="letter-info">
+          <div class="letter-name">Verão curto e fresco</div>
+          <div class="letter-desc">Menos de 4 meses com média ≥ 10 °C; mês mais quente &lt; 22 °C.</div>
+        </div>
+      </div>
+      <div class="letter-item g-D">
+        <div class="letter-badge">d</div>
+        <div class="letter-info">
+          <div class="letter-name">Inverno muito frio (só em D)</div>
+          <div class="letter-desc">Mês mais frio &lt; −38 °C.</div>
+        </div>
+      </div>
+
+      <div class="group-header">Atenção: grupos A e E</div>
+      <div class="letter-item g-A">
+        <div class="letter-badge">—</div>
+        <div class="letter-info">
+          <div class="letter-name">Não têm 3ª letra</div>
+          <div class="letter-desc">A sigla final tem apenas 2 caracteres (ex.: Af, Am, Aw, ET, EF).</div>
+        </div>
+      </div>
+    `
+  }
+};
+
+const buttons = document.querySelectorAll('.nav-btn');
+const contentEl = document.getElementById('content');
+
+function render(tab){
+  const data = CONTENT[tab];
+  contentEl.innerHTML =
+    '<h2>' + data.title + '</h2>' +
+    '<div class="subtitle">' + data.subtitle + '</div>' +
+    data.html;
+  buttons.forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+}
+
+buttons.forEach(b => b.addEventListener('click', () => render(b.dataset.tab)));
+
+render('l1');
+</script>
+
+</body>
+</html>
